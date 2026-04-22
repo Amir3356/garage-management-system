@@ -12,6 +12,7 @@ const Users = () => {
   const [editingId, setEditingId] = useState(null);
   const [formData, setFormData] = useState({
     name: '',
+    username: '',
     email: '',
     password: '',
     role: 'client',
@@ -49,7 +50,7 @@ const Users = () => {
       setIsModalOpen(false);
       setIsEditing(false);
       setEditingId(null);
-      setFormData({ name: '', email: '', password: '', role: 'client' });
+      setFormData({ name: '', username: '', email: '', password: '', role: 'client' });
       fetchUsers();
     } catch (error) {
       alert(error.response?.data?.message || `Error ${isEditing ? 'updating' : 'creating'} user`);
@@ -61,6 +62,7 @@ const Users = () => {
     setEditingId(user.id);
     setFormData({
       name: user.name,
+      username: user.username,
       email: user.email,
       password: '',
       role: user.role,
@@ -143,7 +145,7 @@ const Users = () => {
                   Name
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                  Email
+                  Username
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
                   Role
@@ -172,7 +174,7 @@ const Users = () => {
                       <span className="text-sm font-medium text-gray-900">{user.name}</span>
                     </div>
                   </td>
-                  <td className="px-6 py-4 text-sm text-gray-500">{user.email}</td>
+                  <td className="px-6 py-4 text-sm text-gray-500">{user.username}</td>
                   <td className="px-6 py-4">{getRoleBadge(user.role)}</td>
                   <td className="px-6 py-4">
                     <span className={`inline-flex items-center gap-1 px-2 py-1 text-xs font-medium rounded-full ${
@@ -268,11 +270,11 @@ const Users = () => {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Username</label>
                 <input
-                  type="email"
-                  value={formData.email}
-                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                  type="text"
+                  value={formData.username}
+                  onChange={(e) => setFormData({ ...formData, username: e.target.value })}
                   className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 outline-none"
                   required
                 />

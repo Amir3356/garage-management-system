@@ -8,6 +8,7 @@ const Register = () => {
   const { register } = useAuth();
   const [formData, setFormData] = useState({
     name: '',
+    username: '',
     email: '',
     password: '',
     password_confirmation: '',
@@ -31,6 +32,7 @@ const Register = () => {
     try {
       await register(
         formData.name,
+        formData.username,
         formData.email,
         formData.password,
         formData.role
@@ -78,7 +80,21 @@ const Register = () => {
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Email
+                Username
+              </label>
+              <input
+                type="text"
+                value={formData.username}
+                onChange={(e) => setFormData({ ...formData, username: e.target.value })}
+                className="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
+                placeholder="Choose a username"
+                required
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Email <span className="text-gray-400">(optional)</span>
               </label>
               <input
                 type="email"
@@ -86,7 +102,6 @@ const Register = () => {
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                 className="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
                 placeholder="Enter your email"
-                required
               />
             </div>
 

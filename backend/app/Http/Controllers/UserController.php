@@ -22,13 +22,15 @@ class UserController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
+            'username' => 'required|string|max:255|unique:users',
+            'email' => 'nullable|string|email|max:255|unique:users',
             'password' => 'required|string|min:8',
             'role' => 'required|in:admin,client,mechanic',
         ]);
 
         $user = User::create([
             'name' => $request->name,
+            'username' => $request->username,
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'role' => $request->role,
@@ -41,11 +43,12 @@ class UserController extends Controller
     {
         $request->validate([
             'name' => 'sometimes|string|max:255',
-            'email' => 'sometimes|string|email|max:255|unique:users,email,' . $user->id,
+            'username' => 'sometimes|string|max:255|unique:users,username,' . $user->id,
+            'email' => 'nullable|string|email|max:255|unique:users,email,' . $user->id,
             'role' => 'sometimes|in:admin,client,mechanic',
         ]);
 
-        $user->update($request->only(['name', 'email', 'role', 'is_active']));
+        $user->update($request->only(['name', 'username', 'email', 'role', 'is_active']));
 
         return response()->json($user);
     }
