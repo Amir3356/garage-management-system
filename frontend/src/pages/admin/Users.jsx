@@ -1,13 +1,15 @@
 import { useEffect, useState } from 'react';
 import api from '../../api/axios';
 import Loader from '../../components/Loader';
-import { Plus, Trash2, User, Wrench, Shield } from 'lucide-react';
+import { Plus, Trash2, Edit2, User, Wrench, Shield } from 'lucide-react';
 
 const Users = () => {
   const [users, setUsers] = useState([]);
   const [mechanics, setMechanics] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editingId, setEditingId] = useState(null);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -37,13 +39,40 @@ const Users = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await api.post('/users', formData);
+      if (isEditing) {
+        const updateData = { ...formData };
+        if (!updateData.password) delete updateData.password;
+        await api.put(`/users/${editingId}`, updateData);
+      } else {
+        await api.post('/users', formData);
+      }
       setIsModalOpen(false);
+      setIsEditing(false);
+      setEditingId(null);
       setFormData({ name: '', email: '', password: '', role: 'client' });
       fetchUsers();
     } catch (error) {
-      alert(error.response?.data?.message || 'Error creating user');
+      alert(error.response?.data?.message || `Error ${isEditing ? 'updating' : 'creating'} user`);
     }
+  };
+
+  const handleEdit = (user) => {
+    setIsEditing(true);
+    setEditingId(user.id);
+    setFormData({
+      name: user.name,
+      email: user.email,
+      password: '',
+      role: user.role,
+    });
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setIsEditing(false);
+    setEditingId(null);
+    setFormData({ name: '', email: '', password: '', role: 'client' });
   };
 
   const handleDelete = async (id) => {
@@ -137,12 +166,20 @@ const Users = () => {
                     {new Date(user.created_at).toLocaleDateString()}
                   </td>
                   <td className="px-6 py-4 text-right">
-                    <button
-                      onClick={() => handleDelete(user.id)}
-                      className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </button>
+                    <div className="flex items-center justify-end gap-2">
+                      <button
+                        onClick={() => handleEdit(user)}
+                        className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                      >
+                        <Edit2 className="w-4 h-4" />
+                      </button>
+                      <button
+                        onClick={() => handleDelete(user.id)}
+                        className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))}
@@ -178,7 +215,7 @@ const Users = () => {
       {isModalOpen && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
           <div className="bg-white rounded-xl w-full max-w-md p-6 animate-fade-in">
-            <h2 className="text-xl font-bold text-gray-900 mb-4">Add User</h2>
+            <h2 className="text-xl font-bold text-gray-900 mb-4">{isEditing ? 'Edit User' : 'Add User'}</h2>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Name</label>
@@ -201,13 +238,15 @@ const Users = () => {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Password {isEditing && <span className="text-gray-400">(leave blank to keep current)</span>}
+                </label>
                 <input
                   type="password"
                   value={formData.password}
                   onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                   className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 outline-none"
-                  required
+                  required={!isEditing}
                   minLength={8}
                 />
               </div>
@@ -226,7 +265,7 @@ const Users = () => {
               <div className="flex gap-3 pt-4">
                 <button
                   type="button"
-                  onClick={() => setIsModalOpen(false)}
+                  onClick={handleCloseModal}
                   className="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50"
                 >
                   Cancel
@@ -235,7 +274,7 @@ const Users = () => {
                   type="submit"
                   className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
                 >
-                  Create User
+                  {isEditing ? 'Update User' : 'Create User'}
                 </button>
               </div>
             </form>
