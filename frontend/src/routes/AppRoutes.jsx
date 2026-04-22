@@ -5,6 +5,8 @@ import ProtectedRoute from '../components/ProtectedRoute';
 // Auth pages
 import Login from '../pages/auth/Login';
 import Register from '../pages/auth/Register';
+import ForgotPassword from '../pages/auth/ForgotPassword';
+import ForgotUsername from '../pages/auth/ForgotUsername';
 
 // Client pages
 import ClientDashboard from '../pages/client/Dashboard';
@@ -41,6 +43,14 @@ const AppRoutes = () => {
       <Route
         path="/register"
         element={!isAuthenticated ? <Register /> : <Navigate to="/" replace />}
+      />
+      <Route
+        path="/forgot-password"
+        element={!isAuthenticated ? <ForgotPassword /> : <Navigate to="/" replace />}
+      />
+      <Route
+        path="/forgot-username"
+        element={!isAuthenticated ? <ForgotUsername /> : <Navigate to="/" replace />}
       />
 
       {/* Protected routes */}
