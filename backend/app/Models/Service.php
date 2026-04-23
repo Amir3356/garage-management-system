@@ -16,8 +16,8 @@ class Service extends Model
         'duration_minutes',
     ];
 
-    public function bookings()
+    public function appointments()
     {
-        return $this->hasMany(Booking::class);
+        return $this->hasMany(Appointment::class);
     }
 }

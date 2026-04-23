@@ -38,14 +38,14 @@ class User extends Authenticatable
         return $this->hasMany(Vehicle::class);
     }
 
-    public function bookings()
+    public function appointments()
     {
-        return $this->hasMany(Booking::class);
+        return $this->hasMany(Appointment::class);
     }
 
-    public function assignedBookings()
+    public function assignedAppointments()
     {
-        return $this->hasMany(Booking::class, 'assigned_mechanic_id');
+        return $this->hasMany(Appointment::class, 'assigned_mechanic_id');
     }
 
     public function isAdmin(): bool

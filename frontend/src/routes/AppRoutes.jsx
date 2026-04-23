@@ -16,7 +16,7 @@ import History from '../pages/client/History';
 import AdminDashboard from '../pages/admin/Dashboard';
 import Users from '../pages/admin/Users';
 import Services from '../pages/admin/Services';
-import Bookings from '../pages/admin/Bookings';
+import Appointments from '../pages/admin/Appointments';
 
 // Mechanic pages
 import MechanicDashboard from '../pages/mechanic/Dashboard';
@@ -97,10 +97,10 @@ const AppRoutes = () => {
         }
       />
       <Route
-        path="/bookings"
+        path="/appointments"
         element={
           <ProtectedRoute allowedRoles={['admin']}>
-            <Bookings />
+            <Appointments />
           </ProtectedRoute>
         }
       />

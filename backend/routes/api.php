@@ -4,7 +4,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\VehicleController;
 use App\Http\Controllers\ServiceController;
-use App\Http\Controllers\BookingController;
+use App\Http\Controllers\AppointmentController;
 use Illuminate\Support\Facades\Route;
 
 Route::post('/register', [AuthController::class, 'register']);
@@ -35,11 +35,11 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/services/{service}', [ServiceController::class, 'update']);
     Route::delete('/services/{service}', [ServiceController::class, 'destroy']);
 
-    Route::get('/bookings', [BookingController::class, 'index']);
-    Route::get('/bookings/stats', [BookingController::class, 'stats']);
-    Route::get('/bookings/{booking}', [BookingController::class, 'show']);
-    Route::post('/bookings', [BookingController::class, 'store']);
-    Route::put('/bookings/{booking}', [BookingController::class, 'update']);
-    Route::delete('/bookings/{booking}', [BookingController::class, 'destroy']);
-    Route::post('/bookings/{booking}/assign', [BookingController::class, 'assignMechanic']);
+    Route::get('/appointments', [AppointmentController::class, 'index']);
+    Route::get('/appointments/stats', [AppointmentController::class, 'stats']);
+    Route::get('/appointments/{appointment}', [AppointmentController::class, 'show']);
+    Route::post('/appointments', [AppointmentController::class, 'store']);
+    Route::put('/appointments/{appointment}', [AppointmentController::class, 'update']);
+    Route::delete('/appointments/{appointment}', [AppointmentController::class, 'destroy']);
+    Route::post('/appointments/{appointment}/assign', [AppointmentController::class, 'assignMechanic']);
 });
