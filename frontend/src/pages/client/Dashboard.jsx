@@ -6,29 +6,29 @@ import { Car, Calendar, CheckCircle, Clock } from 'lucide-react';
 const ClientDashboard = () => {
   const [stats, setStats] = useState({
     vehicles: 0,
-    pendingBookings: 0,
+    pendingAppointments: 0,
     completedServices: 0,
-    totalBookings: 0,
+    totalAppointments: 0,
   });
-  const [recentBookings, setRecentBookings] = useState([]);
+  const [recentAppointments, setRecentAppointments] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [vehiclesRes, bookingsRes] = await Promise.all([
+        const [vehiclesRes, appointmentsRes] = await Promise.all([
           api.get('/vehicles'),
-          api.get('/bookings'),
+          api.get('/appointments'),
         ]);
 
-        const bookings = bookingsRes.data;
+        const appointments = appointmentsRes.data;
         setStats({
           vehicles: vehiclesRes.data.length,
-          pendingBookings: bookings.filter((b) => b.status === 'pending').length,
-          completedServices: bookings.filter((b) => b.status === 'completed').length,
-          totalBookings: bookings.length,
+          pendingAppointments: appointments.filter((a) => a.status === 'pending').length,
+          completedServices: appointments.filter((a) => a.status === 'completed').length,
+          totalAppointments: appointments.length,
         });
-        setRecentBookings(bookings.slice(0, 5));
+        setRecentAppointments(appointments.slice(0, 5));
       } catch (error) {
         console.error('Error fetching dashboard data:', error);
       } finally {
@@ -78,7 +78,7 @@ const ClientDashboard = () => {
             </div>
             <div>
               <p className="text-sm text-gray-500">Pending</p>
-              <p className="text-2xl font-bold text-gray-900">{stats.pendingBookings}</p>
+              <p className="text-2xl font-bold text-gray-900">{stats.pendingAppointments}</p>
             </div>
           </div>
         </div>
@@ -101,17 +101,17 @@ const ClientDashboard = () => {
               <Calendar className="w-6 h-6 text-purple-600" />
             </div>
             <div>
-              <p className="text-sm text-gray-500">Total Bookings</p>
-              <p className="text-2xl font-bold text-gray-900">{stats.totalBookings}</p>
+              <p className="text-sm text-gray-500">Total Appointments</p>
+              <p className="text-2xl font-bold text-gray-900">{stats.totalAppointments}</p>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Recent Bookings */}
+      {/* Recent Appointments */}
       <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
         <div className="p-6 border-b border-gray-100">
-          <h2 className="text-lg font-semibold text-gray-900">Recent Bookings</h2>
+          <h2 className="text-lg font-semibold text-gray-900">Recent Appointments</h2>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full">
@@ -124,28 +124,28 @@ const ClientDashboard = () => {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
-              {recentBookings.map((booking) => (
-                <tr key={booking.id} className="hover:bg-gray-50">
-                  <td className="px-6 py-4 text-sm text-gray-900">{booking.service?.name}</td>
+              {recentAppointments.map((appointment) => (
+                <tr key={appointment.id} className="hover:bg-gray-50">
+                  <td className="px-6 py-4 text-sm text-gray-900">{appointment.service?.name}</td>
                   <td className="px-6 py-4 text-sm text-gray-500">
-                    {booking.vehicle?.car_name} ({booking.vehicle?.plate_number})
+                    {appointment.vehicle?.car_name} ({appointment.vehicle?.plate_number})
                   </td>
                   <td className="px-6 py-4">
-                    <span className={`px-2 py-1 text-xs font-medium rounded-full ${getStatusBadge(booking.status)}`}>
-                      {booking.status.replace('_', ' ')}
+                    <span className={`px-2 py-1 text-xs font-medium rounded-full ${getStatusBadge(appointment.status)}`}>
+                      {appointment.status.replace('_', ' ')}
                     </span>
                   </td>
                   <td className="px-6 py-4 text-sm text-gray-500">
-                    {booking.scheduled_date
-                      ? new Date(booking.scheduled_date).toLocaleDateString()
+                    {appointment.scheduled_date
+                      ? new Date(appointment.scheduled_date).toLocaleDateString()
                       : 'Not scheduled'}
                   </td>
                 </tr>
               ))}
-              {recentBookings.length === 0 && (
+              {recentAppointments.length === 0 && (
                 <tr>
                   <td colSpan="4" className="px-6 py-8 text-center text-gray-500">
-                    No bookings yet. Book your first service!
+                    No appointments yet. Schedule your first service!
                   </td>
                 </tr>
               )}

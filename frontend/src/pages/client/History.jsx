@@ -3,28 +3,28 @@ import api from '../../api/axios';
 import Loader, { SkeletonRow } from '../../components/Loader';
 
 const History = () => {
-  const [bookings, setBookings] = useState([]);
+  const [appointments, setAppointments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState('all');
 
   useEffect(() => {
-    const fetchBookings = async () => {
+    const fetchAppointments = async () => {
       try {
-        const response = await api.get('/bookings');
-        setBookings(response.data);
+        const response = await api.get('/appointments');
+        setAppointments(response.data);
       } catch (error) {
-        console.error('Error fetching bookings:', error);
+        console.error('Error fetching appointments:', error);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchBookings();
+    fetchAppointments();
   }, []);
 
-  const filteredBookings = bookings.filter((booking) => {
+  const filteredAppointments = appointments.filter((appointment) => {
     if (filter === 'all') return true;
-    return booking.status === filter;
+    return appointment.status === filter;
   });
 
   const getStatusBadge = (status) => {
@@ -90,48 +90,48 @@ const History = () => {
                   <SkeletonRow />
                   <SkeletonRow />
                 </>
-              ) : filteredBookings.length === 0 ? (
+              ) : filteredAppointments.length === 0 ? (
                 <tr>
                   <td colSpan="6" className="px-6 py-8 text-center text-gray-500">
-                    No bookings found
+                    No appointments found
                   </td>
                 </tr>
               ) : (
-                filteredBookings.map((booking) => (
-                  <tr key={booking.id} className="hover:bg-gray-50">
+                filteredAppointments.map((appointment) => (
+                  <tr key={appointment.id} className="hover:bg-gray-50">
                     <td className="px-6 py-4">
                       <div>
                         <p className="text-sm font-medium text-gray-900">
-                          {booking.service?.name}
+                          {appointment.service?.name}
                         </p>
-                        {booking.notes && (
-                          <p className="text-xs text-gray-500 mt-1">{booking.notes}</p>
+                        {appointment.notes && (
+                          <p className="text-xs text-gray-500 mt-1">{appointment.notes}</p>
                         )}
                       </div>
                     </td>
                     <td className="px-6 py-4">
-                      <p className="text-sm text-gray-900">{booking.vehicle?.car_name}</p>
-                      <p className="text-xs text-gray-500">{booking.vehicle?.plate_number}</p>
+                      <p className="text-sm text-gray-900">{appointment.vehicle?.car_name}</p>
+                      <p className="text-xs text-gray-500">{appointment.vehicle?.plate_number}</p>
                     </td>
                     <td className="px-6 py-4">
                       <span
                         className={`px-2 py-1 text-xs font-medium rounded-full ${getStatusBadge(
-                          booking.status
+                          appointment.status
                         )}`}
                       >
-                        {booking.status.replace('_', ' ')}
+                        {appointment.status.replace('_', ' ')}
                       </span>
                     </td>
                     <td className="px-6 py-4 text-sm text-gray-900">
-                      ${booking.service?.price}
+                      ${appointment.service?.price}
                     </td>
                     <td className="px-6 py-4 text-sm text-gray-500">
-                      {booking.scheduled_date
-                        ? new Date(booking.scheduled_date).toLocaleDateString()
+                      {appointment.scheduled_date
+                        ? new Date(appointment.scheduled_date).toLocaleDateString()
                         : 'Not scheduled'}
                     </td>
                     <td className="px-6 py-4 text-sm text-gray-500">
-                      {booking.mechanic?.name || 'Not assigned'}
+                      {appointment.mechanic?.name || 'Not assigned'}
                     </td>
                   </tr>
                 ))
