@@ -237,36 +237,21 @@ const BookService = () => {
                 <label className="block text-xs font-medium text-gray-600 mb-1.5">Time</label>
                 <div className="relative">
                   <Clock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-blue-400" />
-                  <select
+                  <input
+                    type="time"
                     required
-                    value={formData.scheduled_date ? formData.scheduled_date.split('T')[1]?.substring(0,5) : '09:00'}
+                    min="08:00"
+                    max="17:00"
+                    value={formData.scheduled_date ? formData.scheduled_date.split('T')[1]?.substring(0,5) : ''}
                     onChange={(e) => {
                       const time = e.target.value;
                       const date = formData.scheduled_date ? formData.scheduled_date.split('T')[0] : new Date().toISOString().split('T')[0];
                       setFormData({ ...formData, scheduled_date: `${date}T${time}:00` });
                     }}
-                    className="w-full pl-10 pr-4 py-3 rounded-xl border-2 border-blue-200 focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all bg-white appearance-none cursor-pointer"
-                  >
-                    <option value="">Select time</option>
-                    <optgroup label="Morning">
-                      <option value="08:00">8:00 AM</option>
-                      <option value="09:00">9:00 AM</option>
-                      <option value="10:00">10:00 AM</option>
-                      <option value="11:00">11:00 AM</option>
-                    </optgroup>
-                    <optgroup label="Afternoon">
-                      <option value="13:00">1:00 PM</option>
-                      <option value="14:00">2:00 PM</option>
-                      <option value="15:00">3:00 PM</option>
-                      <option value="16:00">4:00 PM</option>
-                    </optgroup>
-                  </select>
-                  <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
-                    <svg className="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
-                    </svg>
-                  </div>
+                    className="w-full pl-10 pr-4 py-3 rounded-xl border-2 border-blue-200 focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all bg-white"
+                  />
                 </div>
+                <p className="text-xs text-gray-500 mt-1.5">Business hours: 8:00 AM - 5:00 PM</p>
               </div>
             </div>
 
@@ -285,7 +270,9 @@ const BookService = () => {
                     key={label}
                     type="button"
                     onClick={() => {
-                      const time = formData.scheduled_date ? formData.scheduled_date.split('T')[1] || '09:00:00' : '09:00:00';
+                      const time = formData.scheduled_date && formData.scheduled_date.includes('T')
+                        ? formData.scheduled_date.split('T')[1]
+                        : '09:00:00';
                       setFormData({ ...formData, scheduled_date: `${dateStr}T${time}` });
                     }}
                     className="px-3 py-1.5 text-xs font-medium bg-white border border-blue-200 text-blue-600 rounded-lg hover:bg-blue-50 hover:border-blue-300 transition-colors"
