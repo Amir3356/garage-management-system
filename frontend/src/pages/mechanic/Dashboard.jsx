@@ -17,7 +17,9 @@ const MechanicDashboard = () => {
     const fetchData = async () => {
       try {
         const response = await api.get('/appointments');
-        const jobs = response.data;
+        // Handle paginated response
+        const jobsData = response.data.data || response.data;
+        const jobs = Array.isArray(jobsData) ? jobsData : [];
         setStats({
           total: jobs.length,
           pending: jobs.filter((j) => j.status === 'pending').length,
