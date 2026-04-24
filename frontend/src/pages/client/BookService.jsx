@@ -97,7 +97,7 @@ const BookService = () => {
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-lg font-bold text-gray-900 mb-3">
               Select Vehicle
             </label>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -127,11 +127,10 @@ const BookService = () => {
           </div>
 
           <div>
-            <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2">
-              <Sparkles className="w-4 h-4 text-amber-500" />
+            <label className="flex items-center gap-2 text-lg font-bold text-gray-900 mb-3">
+              <Sparkles className="w-5 h-5 text-amber-500" />
               Select Services
             </label>
-            <p className="text-xs text-gray-500 mb-4">You can select multiple services</p>
             {formData.service_ids?.length > 0 && (
               <div className="mb-4 p-3 bg-green-50 rounded-lg border border-green-200">
                 <p className="text-sm font-medium text-green-800 mb-2">
