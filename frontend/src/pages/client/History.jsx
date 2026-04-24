@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import api from '../../api/axios';
-import Loader, { SkeletonRow } from '../../components/Loader';
 
 const History = () => {
   const [appointments, setAppointments] = useState([]);
@@ -66,11 +65,11 @@ const History = () => {
             </thead>
             <tbody className="divide-y divide-gray-100">
               {loading ? (
-                <>
-                  <SkeletonRow />
-                  <SkeletonRow />
-                  <SkeletonRow />
-                </>
+                <tr>
+                  <td colSpan="6" className="px-6 py-8 text-center text-gray-500">
+                    Loading...
+                  </td>
+                </tr>
               ) : appointments.length === 0 ? (
                 <tr>
                   <td colSpan="6" className="px-6 py-8 text-center text-gray-500">
