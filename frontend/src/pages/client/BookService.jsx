@@ -10,6 +10,7 @@ const BookService = () => {
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [successCount, setSuccessCount] = useState(0);
   const [selectedService, setSelectedService] = useState(null);
   const [formData, setFormData] = useState({
     vehicle_id: '',
@@ -41,10 +42,15 @@ const BookService = () => {
     e.preventDefault();
     setSubmitting(true);
     try {
-      await api.post('/appointments', formData);
+      const response = await api.post('/appointments', formData);
+      const count = Array.isArray(response.data) ? response.data.length : 1;
+      setSuccessCount(count);
       setSuccess(true);
       setFormData({ vehicle_id: '', service_ids: [], scheduled_date: '', notes: '' });
-      setTimeout(() => setSuccess(false), 3000);
+      setTimeout(() => {
+        setSuccess(false);
+        setSuccessCount(0);
+      }, 3000);
     } catch (error) {
       alert(error.response?.data?.message || 'Error booking service');
     } finally {
@@ -80,7 +86,11 @@ const BookService = () => {
       {success && (
         <div className="mb-6 p-4 bg-green-50 text-green-700 rounded-xl flex items-center gap-3">
           <CheckCircle className="w-5 h-5" />
-          <span>Service booked successfully!</span>
+          <span>
+            {successCount > 1
+              ? `${successCount} services booked successfully!`
+              : 'Service booked successfully!'}
+          </span>
         </div>
       )}
 

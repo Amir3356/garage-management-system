@@ -54,30 +54,43 @@ class AppointmentController extends Controller
     {
         $request->validate([
             'vehicle_id' => 'required|exists:vehicles,id',
-            'service_id' => 'required|exists:services,id',
+            'service_id' => 'nullable|exists:services,id',
+            'service_ids' => 'nullable|array',
+            'service_ids.*' => 'exists:services,id',
             'scheduled_date' => 'nullable|date',
             'notes' => 'nullable|string',
         ]);
 
-        $appointment = Appointment::create([
-            'user_id' => $request->user()->id,
-            'vehicle_id' => $request->vehicle_id,
-            'service_id' => $request->service_id,
-            'status' => 'pending',
-            'notes' => $request->notes,
-            'scheduled_date' => $request->scheduled_date,
-        ]);
+        $serviceIds = $request->service_ids ?? ($request->service_id ? [$request->service_id] : []);
 
-        $appointment->load(['user', 'vehicle', 'service']);
-
-        // Send email notification to admin
-        try {
-            Mail::to('amirsiraj1995@gmail.com')->send(new AppointmentScheduled($appointment));
-        } catch (\Exception $e) {
-            \Log::error('Failed to send admin notification: ' . $e->getMessage());
+        if (empty($serviceIds)) {
+            return response()->json(['message' => 'Please select at least one service'], 422);
         }
 
-        return response()->json($appointment, 201);
+        $appointments = [];
+
+        foreach ($serviceIds as $serviceId) {
+            $appointment = Appointment::create([
+                'user_id' => $request->user()->id,
+                'vehicle_id' => $request->vehicle_id,
+                'service_id' => $serviceId,
+                'status' => 'pending',
+                'notes' => $request->notes,
+                'scheduled_date' => $request->scheduled_date,
+            ]);
+
+            $appointment->load(['user', 'vehicle', 'service']);
+            $appointments[] = $appointment;
+
+            // Send email notification to admin
+            try {
+                Mail::to('amirsiraj1995@gmail.com')->send(new AppointmentScheduled($appointment));
+            } catch (\Exception $e) {
+                \Log::error('Failed to send admin notification: ' . $e->getMessage());
+            }
+        }
+
+        return response()->json($appointments, 201);
     }
 
     public function update(Request $request, Appointment $appointment)
