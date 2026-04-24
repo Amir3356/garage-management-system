@@ -165,94 +165,14 @@ const ChatBot = () => {
     setInput('');
     setIsLoading(true);
 
-    // If no API key, use fallback immediately
-    if (!API_KEY) {
-      setTimeout(() => {
-        setMessages(prev => [...prev, {
-          role: 'assistant',
-          content: generateFallbackResponse(userMessage.content)
-        }]);
-        setIsLoading(false);
-      }, 500);
-      return;
-    }
-
-    try {
-      const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${API_KEY}`,
-          'Content-Type': 'application/json',
-          'HTTP-Referer': window.location.href,
-          'X-Title': 'Garage Management System'
-        },
-        body: JSON.stringify({
-          model: 'meta-llama/llama-3.2-3b-instruct:free',
-          messages: [
-            {
-              role: 'system',
-              content: `You are an intelligent and helpful assistant for a Garage Management System. Your role is to help customers with:
-
-1. APPOINTMENTS: Booking, checking status, modifying, or canceling appointments
-2. VEHICLES: Adding, viewing, editing, or removing vehicles from their account
-3. SERVICES: Information about repairs, maintenance, pricing, and service types
-4. STATUS TRACKING: Checking appointment progress and service completion
-5. GENERAL HELP: Answering questions about the garage system
-
-GUIDELINES:
-- Be friendly, professional, and concise
-- Provide step-by-step instructions when needed
-- Use emojis sparingly to make responses engaging
-- If asked about non-garage topics, politely redirect to garage-related assistance
-- Always prioritize customer satisfaction and clarity
-- For technical issues, suggest contacting the admin
-- Be proactive in offering related help
-
-RESPONSE STYLE:
-- Keep responses under 200 words when possible
-- Use bullet points for lists
-- Bold important terms using **text**
-- Include relevant emojis: 📅 🚗 🔧 📊 💰 ⏱️
-- End with a follow-up question when appropriate
-
-Remember: You're here to make the garage management experience smooth and easy!`
-            },
-            ...messages.filter(m => m.role !== 'system'),
-            userMessage
-          ]
-        })
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        // Silently fall back to local responses on API errors (rate limits, etc.)
-        console.log('API unavailable, using local responses');
-        throw new Error('API_FALLBACK');
-      }
-
-      if (data.choices && data.choices[0] && data.choices[0].message) {
-        setMessages(prev => [...prev, {
-          role: 'assistant',
-          content: data.choices[0].message.content
-        }]);
-      } else {
-        throw new Error('API_FALLBACK');
-      }
-    } catch (error) {
-      // Silently use intelligent fallback responses
-      // No error shown to user - seamless experience
-      if (error.message !== 'API_FALLBACK') {
-        console.log('Using local intelligent responses');
-      }
-      
+    // Use intelligent local responses (API disabled due to rate limits/credits)
+    setTimeout(() => {
       setMessages(prev => [...prev, {
         role: 'assistant',
         content: generateFallbackResponse(userMessage.content)
       }]);
-    } finally {
       setIsLoading(false);
-    }
+    }, 500);
   };
 
   const handleKeyPress = (e) => {
