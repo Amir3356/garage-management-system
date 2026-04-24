@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import api from '../../api/axios';
 import Loader from '../../components/Loader';
-import { User, Wrench, Calendar, CheckCircle, XCircle, Clock } from 'lucide-react';
+import { User, Wrench, Calendar, CheckCircle, XCircle, Clock, Trash2 } from 'lucide-react';
 
 const Appointments = () => {
   const [appointments, setAppointments] = useState([]);
@@ -45,6 +45,18 @@ const Appointments = () => {
       fetchData();
     } catch (error) {
       alert('Error updating status');
+    }
+  };
+
+  const handleDelete = async (appointmentId) => {
+    if (!confirm('Are you sure you want to delete this appointment?')) {
+      return;
+    }
+    try {
+      await api.delete(`/appointments/${appointmentId}`);
+      fetchData();
+    } catch (error) {
+      alert(error.response?.data?.message || 'Error deleting appointment');
     }
   };
 
@@ -193,6 +205,13 @@ const Appointments = () => {
                           Mark Complete
                         </button>
                       )}
+                      <button
+                        onClick={() => handleDelete(appointment.id)}
+                        className="text-xs text-red-600 hover:text-red-700 flex items-center gap-1"
+                      >
+                        <Trash2 className="w-3 h-3" />
+                        Delete
+                      </button>
                     </div>
                   </td>
                 </tr>
