@@ -174,7 +174,7 @@ const BookService = () => {
 
                       {/* Price, Duration & View Details */}
                       <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-3">
+                        <div className="flex items-center gap-3 flex-wrap">
                           <span className={`inline-flex items-center px-2.5 py-1 rounded-lg text-sm font-bold ${colorClasses.bg} ${colorClasses.text}`}>
                             ${service.price}
                           </span>
@@ -184,13 +184,13 @@ const BookService = () => {
                               Selected
                             </span>
                           )}
-                        {service.duration_minutes && (
-                          <span className="inline-flex items-center gap-1 text-xs text-gray-400">
-                            <Clock className="w-3.5 h-3.5" />
-                            {service.duration_minutes} min
-                          </span>
-                        )}
-                          </div>
+                          {service.duration_minutes && (
+                            <span className="inline-flex items-center gap-1 text-xs text-gray-400">
+                              <Clock className="w-3.5 h-3.5" />
+                              {service.duration_minutes} min
+                            </span>
+                          )}
+                        </div>
                           {/* View Details Button */}
                           <button
                             type="button"
