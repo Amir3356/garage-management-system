@@ -117,10 +117,38 @@ const BookService = () => {
           </div>
 
           <div>
-            <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-4">
+            <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2">
               <Sparkles className="w-4 h-4 text-amber-500" />
-              Select Service
+              Select Services
             </label>
+            <p className="text-xs text-gray-500 mb-4">You can select multiple services</p>
+            {formData.service_ids?.length > 0 && (
+              <div className="mb-4 p-3 bg-green-50 rounded-lg border border-green-200">
+                <p className="text-sm font-medium text-green-800 mb-2">
+                  {formData.service_ids.length} service(s) selected:
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  {formData.service_ids.map((id) => {
+                    const service = services.find((s) => s.id === id);
+                    return service ? (
+                      <span
+                        key={id}
+                        className="inline-flex items-center gap-1 px-2 py-1 bg-white rounded text-xs text-gray-700 border border-green-200"
+                      >
+                        {service.name}
+                        <button
+                          type="button"
+                          onClick={() => toggleService(id)}
+                          className="text-gray-400 hover:text-red-500"
+                        >
+                          <X className="w-3 h-3" />
+                        </button>
+                      </span>
+                    ) : null;
+                  })}
+                </div>
+              </div>
+            )}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {services.map((service, index) => {
                 const icons = [Wrench, Shield, Zap, Settings];
