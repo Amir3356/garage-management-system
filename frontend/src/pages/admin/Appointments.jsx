@@ -102,6 +102,12 @@ const Appointments = () => {
 
   return (
     <div className="space-y-6 animate-fade-in">
+      {successMessage && (
+        <div className="p-4 bg-green-50 text-green-700 rounded-lg flex items-center gap-2 animate-fade-in">
+          <CheckCircle className="w-5 h-5" />
+          {successMessage}
+        </div>
+      )}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <h1 className="text-2xl font-bold text-gray-900">Manage Appointments</h1>
         <div className="flex gap-2 flex-wrap">
