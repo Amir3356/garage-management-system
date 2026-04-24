@@ -260,10 +260,10 @@ const BookService = () => {
                 <Calendar className="w-4 h-4 text-white" />
               </div>
               <div>
-                <label className="block text-sm font-semibold text-gray-900">
+                <label className="block text-lg font-bold text-gray-900">
                   Schedule Appointment Date & Time
                 </label>
-                <p className="text-xs text-gray-500">Choose when you want to bring your vehicle</p>
+                <p className="text-sm font-semibold text-gray-600">Choose when you want to bring your vehicle</p>
               </div>
             </div>
 
@@ -307,7 +307,7 @@ const BookService = () => {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-lg font-bold text-gray-900 mb-2">
               Additional Notes (Optional)
             </label>
             <textarea
