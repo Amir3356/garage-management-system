@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import api from '../../api/axios';
 import Loader from '../../components/Loader';
-import { Plus, Trash2, Edit2, User, Shield, Power, PowerOff } from 'lucide-react';
+import { Plus, Trash2, Edit2, User, Wrench, Shield, Power, PowerOff } from 'lucide-react';
 
 const Users = () => {
   const [users, setUsers] = useState([]);
