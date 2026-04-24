@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Appointment;
 use App\Mail\AppointmentScheduled;
 use App\Mail\MechanicAssigned;
+use App\Mail\AppointmentsBatchScheduled;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 
@@ -69,9 +70,11 @@ class AppointmentController extends Controller
 
         $appointments = [];
 
+        $user = $request->user();
+
         foreach ($serviceIds as $serviceId) {
             $appointment = Appointment::create([
-                'user_id' => $request->user()->id,
+                'user_id' => $user->id,
                 'vehicle_id' => $request->vehicle_id,
                 'service_id' => $serviceId,
                 'status' => 'pending',
@@ -81,10 +84,19 @@ class AppointmentController extends Controller
 
             $appointment->load(['user', 'vehicle', 'service']);
             $appointments[] = $appointment;
+        }
 
-            // Send email notification to admin
+        // Send single email notification with all services
+        if (!empty($appointments)) {
             try {
-                Mail::to('amirsiraj1995@gmail.com')->send(new AppointmentScheduled($appointment));
+                $vehicle = $appointments[0]->vehicle;
+                Mail::to('amirsiraj1995@gmail.com')->send(new AppointmentsBatchScheduled(
+                    $user,
+                    $vehicle,
+                    $appointments,
+                    $request->scheduled_date,
+                    $request->notes
+                ));
             } catch (\Exception $e) {
                 \Log::error('Failed to send admin notification: ' . $e->getMessage());
             }
