@@ -8,6 +8,11 @@ return new class extends Migration
 {
     public function up(): void
     {
+        Schema::dropIfExists('password_resets');
+    }
+
+    public function down(): void
+    {
         Schema::create('password_resets', function (Blueprint $table) {
             $table->id();
             $table->string('email');
@@ -16,10 +21,5 @@ return new class extends Migration
             $table->timestamp('expires_at');
             $table->timestamps();
         });
-    }
-
-    public function down(): void
-    {
-        Schema::dropIfExists('password_resets');
     }
 };
