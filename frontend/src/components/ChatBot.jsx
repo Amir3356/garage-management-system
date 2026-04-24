@@ -10,7 +10,7 @@ const ChatBot = () => {
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef(null);
 
-  const API_KEY = import.meta.env.VITE_OPENROUTER_API_KEY || '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';
+  const API_KEY = import.meta.env.VITE_OPENROUTER_API_KEY;
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -29,7 +29,11 @@ const ChatBot = () => {
     setIsLoading(true);
 
     try {
-      const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+      if (!API_KEY) {
+        throw new Error('API key not configured');
+      }
+
+      const response = await fetch('/openrouter/chat/completions', {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${API_KEY}`,
@@ -50,6 +54,11 @@ const ChatBot = () => {
         })
       });
 
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.error?.message || `HTTP error! status: ${response.status}`);
+      }
+
       const data = await response.json();
       
       if (data.choices && data.choices[0]) {
@@ -64,7 +73,7 @@ const ChatBot = () => {
       console.error('Chat error:', error);
       setMessages(prev => [...prev, {
         role: 'assistant',
-        content: 'Sorry, I\'m having trouble connecting right now. Please try again later.'
+        content: `Error: ${error.message || 'Sorry, I\'m having trouble connecting right now. Please try again later.'}`
       }]);
     } finally {
       setIsLoading(false);
