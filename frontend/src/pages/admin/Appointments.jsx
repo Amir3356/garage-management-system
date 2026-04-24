@@ -10,6 +10,7 @@ const Appointments = () => {
   const [filter, setFilter] = useState('all');
   const [assigningAppointment, setAssigningAppointment] = useState(null);
   const [selectedMechanicId, setSelectedMechanicId] = useState(null);
+  const [successMessage, setSuccessMessage] = useState('');
 
   useEffect(() => {
     fetchData();
@@ -36,9 +37,12 @@ const Appointments = () => {
       return;
     }
     try {
+      const selectedMechanic = mechanics.find((m) => m.id === selectedMechanicId);
       await api.post(`/appointments/${assigningAppointment.id}/assign`, { mechanic_id: selectedMechanicId });
       setAssigningAppointment(null);
       setSelectedMechanicId(null);
+      setSuccessMessage(`Mechanic "${selectedMechanic?.name}" assigned successfully!`);
+      setTimeout(() => setSuccessMessage(''), 3000);
       fetchData();
     } catch (error) {
       alert(error.response?.data?.message || 'Error assigning mechanic');
