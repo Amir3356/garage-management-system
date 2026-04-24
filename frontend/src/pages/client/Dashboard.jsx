@@ -22,9 +22,11 @@ const ClientDashboard = () => {
           api.get('/appointments'),
         ]);
 
-        const appointments = appointmentsRes.data;
+        // Handle paginated response
+        const appointmentsData = appointmentsRes.data.data || appointmentsRes.data;
+        const appointments = Array.isArray(appointmentsData) ? appointmentsData : [];
         setStats({
-          vehicles: vehiclesRes.data.length,
+          vehicles: vehiclesRes.data.length || 0,
           pendingAppointments: appointments.filter((a) => a.status === 'pending').length,
           completedServices: appointments.filter((a) => a.status === 'completed').length,
           totalAppointments: appointments.length,
