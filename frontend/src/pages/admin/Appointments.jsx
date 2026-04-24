@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import api from '../../api/axios';
 import Loader from '../../components/Loader';
-import { User, Wrench, Calendar, CheckCircle, XCircle, Clock, Trash2 } from 'lucide-react';
+import { User, Wrench, Calendar, CheckCircle, XCircle, Clock, Trash2, Phone, Car, DollarSign, Mail } from 'lucide-react';
 
 const Appointments = () => {
   const [appointments, setAppointments] = useState([]);
@@ -127,120 +127,149 @@ const Appointments = () => {
         </div>
       </div>
 
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead className="bg-gray-50">
-              <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                  Customer
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                  Service
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                  Vehicle
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                  Status
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                  Mechanic
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                  Actions
-                </th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-100">
-              {filteredAppointments.map((appointment) => (
-                <tr key={appointment.id} className="hover:bg-gray-50">
-                  <td className="px-6 py-4">
-                    <p className="text-sm font-medium text-gray-900">{appointment.user?.name}</p>
-                    <p className="text-xs text-gray-500">{appointment.user?.email}</p>
-                  </td>
-                  <td className="px-6 py-4">
-                    <p className="text-sm text-gray-900">{appointment.service?.name}</p>
-                    <p className="text-xs text-gray-500">${appointment.service?.price}</p>
-                  </td>
-                  <td className="px-6 py-4 text-sm text-gray-500">
-                    {appointment.vehicle?.car_name}
-                    <br />
-                    <span className="text-xs">{appointment.vehicle?.plate_number}</span>
-                  </td>
-                  <td className="px-6 py-4">
-                    <span
-                      className={`inline-flex items-center gap-1 px-2 py-1 text-xs font-medium rounded-full ${getStatusBadge(
-                        appointment.status
-                      )}`}
-                    >
-                      {getStatusIcon(appointment.status)}
-                      {appointment.status.replace('_', ' ')}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4">
-                    {appointment.mechanic ? (
-                      <div className="flex items-center gap-2">
-                        <div className="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center">
-                          <Wrench className="w-3 h-3 text-blue-600" />
-                        </div>
-                        <div>
-                          <span className="text-sm text-gray-900">{appointment.mechanic.name}</span>
-                          <button
-                            onClick={() => {
-                        setAssigningAppointment(appointment);
-                        setSelectedMechanicId(null);
-                      }}
-                            className="block text-xs text-blue-600 hover:text-blue-700 mt-1"
-                          >
-                            Change Mechanic
-                          </button>
-                        </div>
-                      </div>
-                    ) : (
-                      <button
-                        onClick={() => {
-                        setAssigningAppointment(appointment);
-                        setSelectedMechanicId(null);
-                      }}
-                        className="text-sm text-blue-600 hover:text-blue-700 font-medium"
-                      >
-                        Assign Mechanic
-                      </button>
-                    )}
-                  </td>
-                  <td className="px-6 py-4">
-                    <div className="flex flex-col gap-2">
-                      {appointment.status === 'pending' && (
-                        <button
-                          onClick={() => handleStatusUpdate(appointment.id, 'cancelled')}
-                          className="text-xs text-red-600 hover:text-red-700"
-                        >
-                          Cancel
-                        </button>
-                      )}
-                      {appointment.status === 'in_progress' && (
-                        <button
-                          onClick={() => handleStatusUpdate(appointment.id, 'completed')}
-                          className="text-xs text-green-600 hover:text-green-700"
-                        >
-                          Mark Complete
-                        </button>
-                      )}
-                      <button
-                        onClick={() => handleDelete(appointment.id)}
-                        className="text-xs text-red-600 hover:text-red-700 flex items-center gap-1"
-                      >
-                        <Trash2 className="w-3 h-3" />
-                        Delete
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+      {/* Responsive Card Grid */}
+      {filteredAppointments.length === 0 ? (
+        <div className="text-center py-12 bg-white rounded-xl border border-gray-200">
+          <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gray-100 flex items-center justify-center">
+            <Calendar className="w-8 h-8 text-gray-400" />
+          </div>
+          <p className="text-gray-500">No appointments found</p>
         </div>
+      ) : (
+        <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4">
+          {filteredAppointments.map((appointment) => (
+          <div
+            key={appointment.id}
+            className="bg-white rounded-xl shadow-sm border border-gray-200 p-5 hover:shadow-md transition-shadow"
+          >
+            {/* Header - Status & Actions */}
+            <div className="flex items-start justify-between mb-4">
+              <span
+                className={`inline-flex items-center gap-1 px-3 py-1.5 text-sm font-medium rounded-full ${getStatusBadge(
+                  appointment.status
+                )}`}
+              >
+                {getStatusIcon(appointment.status)}
+                {appointment.status.replace('_', ' ')}
+              </span>
+              <div className="flex gap-2">
+                {appointment.status === 'pending' && (
+                  <button
+                    onClick={() => handleStatusUpdate(appointment.id, 'cancelled')}
+                    className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                    title="Cancel"
+                  >
+                    <XCircle className="w-4 h-4" />
+                  </button>
+                )}
+                {appointment.status === 'in_progress' && (
+                  <button
+                    onClick={() => handleStatusUpdate(appointment.id, 'completed')}
+                    className="p-2 text-green-600 hover:bg-green-50 rounded-lg transition-colors"
+                    title="Mark Complete"
+                  >
+                    <CheckCircle className="w-4 h-4" />
+                  </button>
+                )}
+                <button
+                  onClick={() => handleDelete(appointment.id)}
+                  className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                  title="Delete"
+                >
+                  <Trash2 className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+
+            {/* Customer Info */}
+            <div className="mb-4 p-3 bg-gray-50 rounded-lg">
+              <div className="flex items-center gap-3 mb-2">
+                <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center">
+                  <User className="w-5 h-5 text-blue-600" />
+                </div>
+                <div>
+                  <p className="font-medium text-gray-900">{appointment.user?.name}</p>
+                  <div className="flex items-center gap-2 text-sm text-gray-500">
+                    <Phone className="w-3 h-3" />
+                    {appointment.user?.phone || 'N/A'}
+                  </div>
+                </div>
+              </div>
+              {appointment.user?.email && (
+                <div className="flex items-center gap-2 text-sm text-gray-500 ml-13 pl-13">
+                  <Mail className="w-3 h-3" />
+                  {appointment.user.email}
+                </div>
+              )}
+            </div>
+
+            {/* Service Info */}
+            <div className="mb-4">
+              <div className="flex items-center gap-2 mb-1">
+                <Wrench className="w-4 h-4 text-gray-400" />
+                <span className="font-medium text-gray-900">{appointment.service?.name}</span>
+              </div>
+              <div className="flex items-center gap-2 text-sm text-gray-500">
+                <DollarSign className="w-4 h-4 text-gray-400" />
+                ${appointment.service?.price}
+              </div>
+            </div>
+
+            {/* Vehicle Info */}
+            <div className="mb-4">
+              <div className="flex items-center gap-2 mb-1">
+                <Car className="w-4 h-4 text-gray-400" />
+                <span className="font-medium text-gray-900">{appointment.vehicle?.car_name}</span>
+              </div>
+              <p className="text-sm text-gray-500 ml-6">{appointment.vehicle?.plate_number}</p>
+            </div>
+
+            {/* Date */}
+            {appointment.scheduled_date && (
+              <div className="mb-4 flex items-center gap-2 text-sm text-gray-600">
+                <Calendar className="w-4 h-4" />
+                {new Date(appointment.scheduled_date).toLocaleString()}
+              </div>
+            )}
+
+            {/* Mechanic Assignment */}
+            <div className="pt-4 border-t border-gray-100">
+              {appointment.mechanic ? (
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <div className="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center">
+                      <Wrench className="w-4 h-4 text-green-600" />
+                    </div>
+                    <div>
+                      <p className="text-sm text-gray-500">Assigned to</p>
+                      <p className="font-medium text-gray-900">{appointment.mechanic.name}</p>
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => {
+                      setAssigningAppointment(appointment);
+                      setSelectedMechanicId(null);
+                    }}
+                    className="text-sm text-blue-600 hover:text-blue-700 font-medium px-3 py-1.5 rounded-lg hover:bg-blue-50 transition-colors"
+                  >
+                    Change
+                  </button>
+                </div>
+              ) : (
+                <button
+                  onClick={() => {
+                    setAssigningAppointment(appointment);
+                    setSelectedMechanicId(null);
+                  }}
+                  className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors"
+                >
+                  <Wrench className="w-4 h-4" />
+                  Assign Mechanic
+                </button>
+              )}
+            </div>
+          </div>
+        ))}
       </div>
 
       {/* Assign/Change Mechanic Modal */}
