@@ -13,7 +13,7 @@ const BookService = () => {
   const [selectedService, setSelectedService] = useState(null);
   const [formData, setFormData] = useState({
     vehicle_id: '',
-    service_id: '',
+    service_ids: [],
     scheduled_date: '',
     notes: '',
   });
@@ -43,13 +43,23 @@ const BookService = () => {
     try {
       await api.post('/appointments', formData);
       setSuccess(true);
-      setFormData({ vehicle_id: '', service_id: '', scheduled_date: '', notes: '' });
+      setFormData({ vehicle_id: '', service_ids: [], scheduled_date: '', notes: '' });
       setTimeout(() => setSuccess(false), 3000);
     } catch (error) {
       alert(error.response?.data?.message || 'Error booking service');
     } finally {
       setSubmitting(false);
     }
+  };
+
+  const toggleService = (serviceId) => {
+    setFormData((prev) => {
+      const currentIds = prev.service_ids || [];
+      const newIds = currentIds.includes(serviceId)
+        ? currentIds.filter((id) => id !== serviceId)
+        : [...currentIds, serviceId];
+      return { ...prev, service_ids: newIds };
+    });
   };
 
   if (loading) return <Loader />;
