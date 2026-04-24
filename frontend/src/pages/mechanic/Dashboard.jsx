@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import api from '../../api/axios';
 import Loader from '../../components/Loader';
-import { Wrench, Clock, CheckCircle, AlertCircle } from 'lucide-react';
+import { Wrench, Clock, CheckCircle, AlertCircle, Phone } from 'lucide-react';
 
 const MechanicDashboard = () => {
   const [stats, setStats] = useState({
@@ -125,6 +125,9 @@ const MechanicDashboard = () => {
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
                   Status
                 </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                  Phone
+                </th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
@@ -152,11 +155,17 @@ const MechanicDashboard = () => {
                       {job.status.replace('_', ' ')}
                     </span>
                   </td>
+                  <td className="px-6 py-4">
+                    <div className="flex items-center gap-2 text-sm text-gray-900">
+                      <Phone className="w-4 h-4 text-gray-400" />
+                      {job.user?.phone || 'N/A'}
+                    </div>
+                  </td>
                 </tr>
               ))}
               {recentJobs.length === 0 && (
                 <tr>
-                  <td colSpan="4" className="px-6 py-8 text-center text-gray-500">
+                  <td colSpan="5" className="px-6 py-8 text-center text-gray-500">
                     No jobs assigned yet
                   </td>
                 </tr>
