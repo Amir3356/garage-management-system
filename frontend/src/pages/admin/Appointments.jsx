@@ -62,10 +62,14 @@ const Appointments = () => {
     }
     try {
       const selectedMechanic = mechanics.find((m) => m.id === selectedMechanicId);
-      await api.post(`/appointments/${assigningAppointment.id}/assign`, { mechanic_id: selectedMechanicId });
+      // Assign to all grouped services
+      const ids = assigningAppointment.serviceIds || [assigningAppointment.id];
+      await Promise.all(ids.map(id =>
+        api.post(`/appointments/${id}/assign`, { mechanic_id: selectedMechanicId })
+      ));
       setAssigningAppointment(null);
       setSelectedMechanicId(null);
-      setSuccessMessage(`Mechanic "${selectedMechanic?.name}" assigned successfully!`);
+      setSuccessMessage(`Mechanic "${selectedMechanic?.name}" assigned to ${ids.length} service(s) successfully!`);
       setTimeout(() => setSuccessMessage(''), 3000);
       fetchData();
     } catch (error) {
@@ -73,21 +77,27 @@ const Appointments = () => {
     }
   };
 
-  const handleStatusUpdate = async (appointmentId, status) => {
+  const handleStatusUpdate = async (appointment, status) => {
     try {
-      await api.put(`/appointments/${appointmentId}`, { status });
+      // Update all grouped services
+      const ids = appointment.serviceIds || [appointment.id];
+      await Promise.all(ids.map(id => api.put(`/appointments/${id}`, { status })));
       fetchData();
     } catch (error) {
       alert('Error updating status');
     }
   };
 
-  const handleDelete = async (appointmentId) => {
-    if (!confirm('Are you sure you want to delete this appointment?')) {
+  const handleDelete = async (appointment) => {
+    const ids = appointment.serviceIds || [appointment.id];
+    const msg = ids.length > 1
+      ? `Are you sure you want to delete these ${ids.length} appointments?`
+      : 'Are you sure you want to delete this appointment?';
+    if (!confirm(msg)) {
       return;
     }
     try {
-      await api.delete(`/appointments/${appointmentId}`);
+      await Promise.all(ids.map(id => api.delete(`/appointments/${id}`)));
       fetchData();
     } catch (error) {
       alert(error.response?.data?.message || 'Error deleting appointment');
@@ -179,7 +189,7 @@ const Appointments = () => {
               <div className="flex gap-2">
                 {appointment.status === 'pending' && (
                   <button
-                    onClick={() => handleStatusUpdate(appointment.id, 'cancelled')}
+                    onClick={() => handleStatusUpdate(appointment, 'cancelled')}
                     className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                     title="Cancel"
                   >
@@ -188,7 +198,7 @@ const Appointments = () => {
                 )}
                 {appointment.status === 'in_progress' && (
                   <button
-                    onClick={() => handleStatusUpdate(appointment.id, 'completed')}
+                    onClick={() => handleStatusUpdate(appointment, 'completed')}
                     className="p-2 text-green-600 hover:bg-green-50 rounded-lg transition-colors"
                     title="Mark Complete"
                   >
@@ -196,7 +206,7 @@ const Appointments = () => {
                   </button>
                 )}
                 <button
-                  onClick={() => handleDelete(appointment.id)}
+                  onClick={() => handleDelete(appointment)}
                   className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                   title="Delete"
                 >
@@ -227,16 +237,30 @@ const Appointments = () => {
               )}
             </div>
 
-            {/* Service Info */}
+            {/* Service Info - Multiple Services */}
             <div className="mb-4">
-              <div className="flex items-center gap-2 mb-1">
+              <div className="flex items-center gap-2 mb-2">
                 <Wrench className="w-4 h-4 text-gray-400" />
-                <span className="font-medium text-gray-900">{appointment.service?.name}</span>
+                <span className="font-medium text-gray-900">
+                  {appointment.services?.length > 1
+                    ? `${appointment.services.length} Services`
+                    : 'Service'}
+                </span>
               </div>
-              <div className="flex items-center gap-2 text-sm text-gray-500">
-                <DollarSign className="w-4 h-4 text-gray-400" />
-                ${appointment.service?.price}
+              <div className="space-y-1 ml-6">
+                {(appointment.services || [appointment.service]).map((svc, idx) => (
+                  <div key={idx} className="flex items-center justify-between text-sm">
+                    <span className="text-gray-700">{svc?.name}</span>
+                    <span className="text-gray-500">${svc?.price}</span>
+                  </div>
+                ))}
               </div>
+              {appointment.services?.length > 1 && (
+                <div className="flex items-center gap-2 text-sm font-semibold text-gray-700 mt-2 pt-2 border-t border-gray-100">
+                  <DollarSign className="w-4 h-4 text-gray-400" />
+                  Total: ${appointment.services.reduce((sum, s) => sum + (s?.price || 0), 0)}
+                </div>
+              )}
             </div>
 
             {/* Vehicle Info */}
@@ -304,9 +328,14 @@ const Appointments = () => {
             <h2 className="text-xl font-bold text-gray-900 mb-4">
               {assigningAppointment.mechanic ? 'Change Mechanic' : 'Assign Mechanic'}
             </h2>
-            <p className="text-sm text-gray-500 mb-2">
-              Appointment: {assigningAppointment.service?.name} for {assigningAppointment.user?.name}
-            </p>
+            <div className="text-sm text-gray-500 mb-2">
+              <p className="font-medium text-gray-700 mb-1">Services for {assigningAppointment.user?.name}:</p>
+              <div className="space-y-1">
+                {(assigningAppointment.services || [assigningAppointment.service]).map((svc, idx) => (
+                  <p key={idx} className="text-gray-600">• {svc?.name} (${svc?.price})</p>
+                ))}
+              </div>
+            </div>
             {assigningAppointment.mechanic && (
               <p className="text-sm text-amber-600 mb-4">
                 Currently assigned: <strong>{assigningAppointment.mechanic.name}</strong>
