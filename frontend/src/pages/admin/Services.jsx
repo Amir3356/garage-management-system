@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import api from '../../api/axios';
+import ShimmerLoader from '../../components/ShimmerLoader';
 import { Plus, Edit2, Trash2, DollarSign, Clock } from 'lucide-react';
 
 const Services = () => {
@@ -73,7 +74,7 @@ const Services = () => {
     }
   };
 
-  if (loading) return <div className="p-6"></div>;
+  if (loading) return <ShimmerLoader />;
 
   return (
     <div className="space-y-6 animate-fade-in">

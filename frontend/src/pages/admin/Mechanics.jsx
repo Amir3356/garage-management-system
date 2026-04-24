@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import api from '../../api/axios';
+import ShimmerLoader from '../../components/ShimmerLoader';
 import { UserCog, Mail, Phone, Wrench, Users } from 'lucide-react';
 
 const Mechanics = () => {
@@ -21,7 +22,7 @@ const Mechanics = () => {
     fetchMechanics();
   }, []);
 
-  if (loading) return <div className="p-6"></div>;
+  if (loading) return <ShimmerLoader />;
 
   return (
     <div className="space-y-6 animate-fade-in">

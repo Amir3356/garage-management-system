@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import api from '../../api/axios';
+import ShimmerLoader from '../../components/ShimmerLoader';
 import { Calendar, Clock, Wrench, CheckCircle, Sparkles, Shield, Zap, Settings, Eye, X, Info } from 'lucide-react';
 
 const BookService = () => {
@@ -66,7 +67,7 @@ const BookService = () => {
     });
   };
 
-  if (loading) return <div className="p-6"></div>;
+  if (loading) return <ShimmerLoader />;
 
   if (vehicles.length === 0) {
     return (

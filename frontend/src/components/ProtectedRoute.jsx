@@ -1,11 +1,12 @@
 import { Navigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import ShimmerLoader from './ShimmerLoader';
 
 const ProtectedRoute = ({ children, allowedRoles = [] }) => {
   const { isAuthenticated, user, loading } = useAuth();
 
   if (loading) {
-    return <div className="min-h-screen"></div>;
+    return <ShimmerLoader />;
   }
 
   if (!isAuthenticated) {

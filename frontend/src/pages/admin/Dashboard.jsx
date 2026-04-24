@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import api from '../../api/axios';
+import ShimmerLoader from '../../components/ShimmerLoader';
 import {
   Car,
   Calendar,
@@ -39,7 +40,7 @@ const AdminDashboard = () => {
     return styles[status] || 'bg-gray-100 text-gray-700';
   };
 
-  if (loading) return <div className="p-6"></div>;
+  if (loading) return <ShimmerLoader />;
 
   return (
     <div className="space-y-6 animate-fade-in">

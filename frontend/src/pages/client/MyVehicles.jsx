@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import api from '../../api/axios';
+import ShimmerLoader from '../../components/ShimmerLoader';
 import { Plus, Car, Trash2, Edit2 } from 'lucide-react';
 const MyVehicles = () => {
   const [vehicles, setVehicles] = useState([]);
@@ -66,7 +67,7 @@ const MyVehicles = () => {
     }
   };
 
-  if (loading) return <div className="p-6"></div>;
+  if (loading) return <ShimmerLoader />;
 
   return (
     <div className="space-y-6 animate-fade-in">

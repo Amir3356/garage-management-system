@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import api from '../../api/axios';
+import ShimmerLoader from '../../components/ShimmerLoader';
 import { Trash2 } from 'lucide-react';
 
 const History = () => {
@@ -79,9 +80,19 @@ const History = () => {
             </thead>
             <tbody className="divide-y divide-gray-100">
               {loading ? (
-                <tr>
-                  <td colSpan="7" className="px-6 py-8"></td>
-                </tr>
+                <>
+                  {[1, 2, 3].map((i) => (
+                    <tr key={i}>
+                      <td className="px-6 py-4"><div className="shimmer h-4 w-24 rounded"></div></td>
+                      <td className="px-6 py-4"><div className="shimmer h-4 w-20 rounded"></div></td>
+                      <td className="px-6 py-4"><div className="shimmer h-4 w-16 rounded"></div></td>
+                      <td className="px-6 py-4"><div className="shimmer h-4 w-12 rounded"></div></td>
+                      <td className="px-6 py-4"><div className="shimmer h-4 w-20 rounded"></div></td>
+                      <td className="px-6 py-4"><div className="shimmer h-4 w-20 rounded"></div></td>
+                      <td className="px-6 py-4"><div className="shimmer h-4 w-8 rounded"></div></td>
+                    </tr>
+                  ))}
+                </>
               ) : appointments.length === 0 ? (
                 <tr>
                   <td colSpan="7" className="px-6 py-8 text-center text-gray-500">

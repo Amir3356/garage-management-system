@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import api from '../../api/axios';
+import ShimmerLoader from '../../components/ShimmerLoader';
 import { User, Wrench, Calendar, CheckCircle, XCircle, Clock, Trash2, Phone, Car, DollarSign, Mail } from 'lucide-react';
 
 const Appointments = () => {
@@ -132,7 +133,7 @@ const Appointments = () => {
     }
   };
 
-  if (loading) return <div className="p-6"></div>;
+  if (loading) return <ShimmerLoader />;
 
   return (
     <div className="space-y-6 animate-fade-in">
