@@ -282,14 +282,25 @@ const Appointments = () => {
             {/* Mechanic Info */}
             {appointment.mechanic && (
               <div className="pt-4 border-t border-gray-100">
-                <div className="flex items-center gap-2">
-                  <div className="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center">
-                    <Wrench className="w-4 h-4 text-green-600" />
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <div className="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center">
+                      <Wrench className="w-4 h-4 text-green-600" />
+                    </div>
+                    <div>
+                      <p className="text-sm text-gray-500">Assigned to</p>
+                      <p className="font-medium text-gray-900">{appointment.mechanic.name}</p>
+                    </div>
                   </div>
-                  <div>
-                    <p className="text-sm text-gray-500">Assigned to</p>
-                    <p className="font-medium text-gray-900">{appointment.mechanic.name}</p>
-                  </div>
+                  <button
+                    onClick={() => {
+                      setAssigningAppointment(appointment);
+                      setSelectedMechanicId(null);
+                    }}
+                    className="text-sm text-blue-600 hover:text-blue-700 font-medium px-3 py-1.5 rounded-lg hover:bg-blue-50 transition-colors"
+                  >
+                    Change
+                  </button>
                 </div>
               </div>
             )}
