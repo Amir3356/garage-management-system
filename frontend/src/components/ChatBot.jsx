@@ -20,68 +20,141 @@ const ChatBot = () => {
     scrollToBottom();
   }, [messages]);
 
-  // Smart fallback response generator
+  // Intelligent response generator with better pattern matching
   const generateFallbackResponse = (userInput) => {
-    const input = userInput.toLowerCase();
+    const input = userInput.toLowerCase().trim();
     
-    // Greetings
-    if (input.match(/^(hi|hello|hey|good morning|good afternoon|good evening|howdy)/)) {
-      return "Hello! Welcome to our Garage Management System. How can I assist you today? 😊";
+    // Greetings - more variations
+    if (input.match(/^(hi|hello|hey|good morning|good afternoon|good evening|howdy|greetings|sup|yo)[\s!?]*$/)) {
+      const greetings = [
+        "Hello! Welcome to our Garage Management System. How can I assist you today? 😊",
+        "Hi there! I'm here to help with your vehicle service needs. What can I do for you?",
+        "Hey! Ready to help you with appointments, vehicles, or services. What do you need?"
+      ];
+      return greetings[Math.floor(Math.random() * greetings.length)];
     }
     
-    // Appointment/Booking related
-    if (input.includes('appointment') || input.includes('schedule') || input.includes('book') || input.includes('reserve')) {
-      return "To schedule an appointment:\n1. Go to 'Appointment' page\n2. Select your vehicle\n3. Choose a service type\n4. Pick date and time\n5. Submit your request\n\nYou'll get confirmation once the admin reviews it.";
+    // How are you / conversational
+    if (input.match(/how are you|how're you|how r u|what's up|whats up|wassup/)) {
+      return "I'm doing great, thanks for asking! 😊 I'm here and ready to help you with your garage needs. What can I assist you with today?";
     }
     
-    // Vehicle related
-    if (input.includes('vehicle') || input.includes('car') || input.includes('truck') || input.includes('motorcycle')) {
-      if (input.includes('add') || input.includes('new') || input.includes('register')) {
-        return "To add a new vehicle:\n1. Go to 'My Vehicles' page\n2. Click 'Add Vehicle' button\n3. Enter vehicle details (name, model, plate number)\n4. Save\n\nYour vehicle will be ready for booking appointments!";
+    // What can you do / capabilities
+    if (input.match(/what (can|do) you (do|help)|your (capabilities|features)|tell me about yourself/)) {
+      return "I'm your Garage Management Assistant! I can help you with:\n\n📅 **Appointments** - Schedule, check status, or cancel\n🚗 **Vehicles** - Add, view, or manage your vehicles\n🔧 **Services** - Learn about repairs, maintenance, pricing\n📊 **Status Updates** - Track your service progress\n💬 **Questions** - Answer any garage-related queries\n\nWhat would you like to do?";
+    }
+    
+    // Appointment/Booking related - more intelligent
+    if (input.match(/\b(appointment|book|schedule|reserve|make.*appointment|need.*appointment)\b/)) {
+      if (input.match(/\b(how|what|where|can i|do i)\b/)) {
+        return "**Booking an Appointment is Easy!** 📅\n\n1. Navigate to the 'Appointments' page\n2. Select your vehicle from the list\n3. Choose the service you need\n4. Pick your preferred date and time\n5. Submit your request\n\nThe admin will review and confirm your appointment. You'll see the status in your Dashboard!";
       }
-      return "You can view and manage all your vehicles in the 'My Vehicles' section. From there, you can add, edit, or remove vehicles from your account.";
-    }
-    
-    // Service related
-    if (input.includes('service') || input.includes('repair') || input.includes('maintenance') || input.includes('fix')) {
-      if (input.includes('price') || input.includes('cost') || input.includes('how much') || input.includes('fee')) {
-        return "Service prices vary based on the type of service. You can see exact prices when you go to the Appointment page and select a service. We offer transparent pricing with no hidden fees!";
+      if (input.match(/\b(cancel|change|modify|reschedule)\b/)) {
+        return "**To modify your appointment:**\n\n1. Go to your Dashboard or History page\n2. Find the appointment you want to change\n3. Contact the admin for modifications\n\n💡 **Tip:** Try to make changes at least 24 hours in advance!";
       }
-      return "We offer various services including:\n• Oil change & maintenance\n• Engine repairs\n• Brake services\n• Tire services\n• General inspections\n• And more!\n\nCheck the Appointment page to see all available services.";
+      return "I can help you with appointments! Would you like to:\n• Learn how to book an appointment?\n• Check your appointment status?\n• Cancel or modify an appointment?\n\nJust let me know!";
     }
     
-    // Status related
-    if (input.includes('status') || input.includes('progress') || input.includes('done') || input.includes('ready')) {
-      return "To check your appointment status:\n1. Go to 'Dashboard' or 'History' page\n2. View your appointments list\n\nStatus meanings:\n🟡 Pending - Waiting for admin approval\n🔵 In Progress - Being worked on\n🟢 Completed - Finished and ready\n🔴 Cancelled - Appointment cancelled";
+    // Vehicle related - more context aware
+    if (input.match(/\b(vehicle|car|truck|motorcycle|bike|auto)\b/)) {
+      if (input.match(/\b(add|new|register|create)\b/)) {
+        return "**Adding a New Vehicle** 🚗\n\n1. Go to 'My Vehicles' page\n2. Click the 'Add Vehicle' button\n3. Fill in the details:\n   • Vehicle name/model\n   • License plate number\n   • Any other relevant info\n4. Save your vehicle\n\nOnce added, you can use it to book appointments!";
+      }
+      if (input.match(/\b(edit|update|change|modify)\b/)) {
+        return "**Updating Vehicle Information:**\n\n1. Navigate to 'My Vehicles'\n2. Find the vehicle you want to update\n3. Click the edit button\n4. Make your changes\n5. Save\n\nYou can update vehicle details anytime!";
+      }
+      if (input.match(/\b(delete|remove)\b/)) {
+        return "**Removing a Vehicle:**\n\n1. Go to 'My Vehicles' page\n2. Find the vehicle you want to remove\n3. Click the delete/remove option\n\n⚠️ **Note:** Make sure you don't have any pending appointments for that vehicle!";
+      }
+      return "I can help you manage your vehicles! You can:\n• Add a new vehicle\n• View all your vehicles\n• Edit vehicle information\n• Remove a vehicle\n\nWhat would you like to do?";
     }
     
-    // Cancel related
-    if (input.includes('cancel') || input.includes('delete') || input.includes('remove') || input.includes('stop')) {
-      return "To cancel an appointment:\n1. Go to 'Dashboard' or 'History'\n2. Find the appointment you want to cancel\n3. Contact the admin for cancellation\n\nNote: Please cancel at least 24 hours before your scheduled time.";
+    // Service related - comprehensive
+    if (input.match(/\b(service|repair|maintenance|fix|work|problem)\b/)) {
+      if (input.match(/\b(price|cost|how much|fee|charge|expensive|cheap)\b/)) {
+        return "**Service Pricing** 💰\n\nPrices vary by service type. You can see exact pricing when booking an appointment:\n\n1. Go to Appointments page\n2. Select a service\n3. View the price before confirming\n\nWe believe in transparent pricing - no hidden fees! For specific quotes, you can also contact the garage directly.";
+      }
+      if (input.match(/\b(what|which|types|kind|available|offer)\b/)) {
+        return "**Our Services** 🔧\n\nWe offer comprehensive vehicle services:\n\n• 🛢️ Oil changes & fluid checks\n• 🔩 Engine diagnostics & repairs\n• 🚗 Brake system services\n• 🛞 Tire services (rotation, replacement)\n• 🔍 General inspections\n• ⚙️ Transmission services\n• 🔋 Battery & electrical work\n• And much more!\n\nCheck the Appointments page for the complete list!";
+      }
+      if (input.match(/\b(recommend|suggest|need|should)\b/)) {
+        return "**Service Recommendations:**\n\nFor the best advice on what your vehicle needs:\n\n1. Book an inspection appointment\n2. Our mechanics will assess your vehicle\n3. You'll get personalized recommendations\n\nRegular maintenance typically includes:\n• Oil changes every 3,000-5,000 miles\n• Tire rotation every 6,000-8,000 miles\n• Brake inspection annually\n\nWhat specific concerns do you have?";
+      }
+      return "I can help with service information! Are you looking for:\n• Service types we offer?\n• Pricing information?\n• Service recommendations?\n• How to book a service?\n\nLet me know!";
     }
     
-    // Help related - only trigger on specific help phrases
-    if (input.match(/\b(help|assist|support)\b/) && !input.includes('computer') && !input.includes('what is') && !input.includes('meaning')) {
-      return "I can help you with:\n\n📅 Scheduling appointments\n🚗 Managing your vehicles\n🔧 Service information\n📊 Checking appointment status\n❌ Cancelling appointments\n\nJust ask me anything about these topics!";
+    // Status related - detailed
+    if (input.match(/\b(status|progress|check|where|track)\b/) && input.match(/\b(appointment|service|car|vehicle)\b/)) {
+      return "**Checking Your Appointment Status** 📊\n\n1. Go to your Dashboard or History page\n2. View all your appointments\n\n**Status Indicators:**\n🟡 **Pending** - Awaiting admin approval\n🔵 **In Progress** - Currently being worked on\n🟢 **Completed** - Service finished, ready for pickup\n🔴 **Cancelled** - Appointment was cancelled\n\nYou'll receive updates as your status changes!";
+    }
+    
+    // Payment related
+    if (input.match(/\b(pay|payment|invoice|bill|charge|credit card)\b/)) {
+      return "**Payment Information** 💳\n\nPayment details:\n• You'll receive an invoice after service completion\n• Check your Dashboard for invoices\n• Payment methods are handled by the garage\n• Contact the admin for specific payment questions\n\nNeed help with a specific invoice?";
+    }
+    
+    // Hours / Operating time
+    if (input.match(/\b(hours|open|close|timing|when.*open|operating)\b/)) {
+      return "**Operating Hours** 🕐\n\nFor our current operating hours and availability:\n• Check your Dashboard for contact information\n• Contact the garage directly\n• Hours may vary by location\n\nWhen booking an appointment, you'll see available time slots!";
+    }
+    
+    // Location / Address
+    if (input.match(/\b(location|address|where|directions|find)\b/) && !input.match(/\b(vehicle|car)\b/)) {
+      return "**Garage Location** 📍\n\nFor location and directions:\n• Check your Dashboard for address details\n• Contact information is available in your account\n• The admin can provide specific directions\n\nNeed help finding us?";
+    }
+    
+    // Emergency / Urgent
+    if (input.match(/\b(emergency|urgent|asap|immediately|right now|help)\b/)) {
+      return "**Urgent Assistance** 🚨\n\nFor urgent matters:\n1. Contact the garage directly via phone\n2. Check your Dashboard for emergency contact info\n3. If it's a roadside emergency, call emergency services\n\nFor regular appointments, you can book through the system. Is this an emergency?";
+    }
+    
+    // Warranty / Guarantee
+    if (input.match(/\b(warranty|guarantee|covered|insurance)\b/)) {
+      return "**Warranty & Guarantees** ✅\n\nFor warranty information:\n• Contact the garage admin directly\n• Warranty terms vary by service type\n• Keep your service receipts\n• Check your invoice for warranty details\n\nNeed specific warranty information?";
+    }
+    
+    // Parts
+    if (input.match(/\b(parts|spare|component|replace)\b/)) {
+      return "**Parts & Replacements** 🔧\n\nFor parts information:\n• Parts are included in service pricing\n• Quality parts are used for all repairs\n• Specific part questions? Contact the admin\n• You can discuss part preferences during your appointment\n\nNeed information about a specific part?";
     }
     
     // Contact related
-    if (input.includes('contact') || input.includes('phone') || input.includes('email') || input.includes('call') || input.includes('reach')) {
-      return "For direct assistance:\n• Speak with the garage admin\n• Visit the garage in person\n• Or check your Dashboard for contact information\n\nOur team is ready to help you with any questions!";
+    if (input.match(/\b(contact|phone|email|call|reach|talk|speak)\b/)) {
+      return "**Contact Information** 📞\n\nTo reach the garage:\n• Check your Dashboard for contact details\n• Phone and email are available there\n• You can also message through the system\n• Visit in person during operating hours\n\nHow would you like to get in touch?";
     }
     
-    // Time/When related
-    if (input.includes('when') || input.includes('time') || input.includes('how long') || input.includes('duration')) {
-      return "Appointment durations depend on the service type:\n• Basic maintenance: 30-60 minutes\n• Oil change: 30-45 minutes\n• Major repairs: 2-4 hours or more\n\nYou'll see estimated duration when booking. Check your Dashboard for specific appointment times.";
+    // Time/Duration related
+    if (input.match(/\b(how long|duration|take|wait|time)\b/)) {
+      return "**Service Duration** ⏱️\n\nTypical service times:\n• Oil change: 30-45 minutes\n• Basic maintenance: 30-60 minutes\n• Brake service: 1-2 hours\n• Major repairs: 2-4+ hours\n• Diagnostics: 30-90 minutes\n\nExact duration depends on:\n• Service type\n• Vehicle condition\n• Parts availability\n\nYou'll get an estimate when booking!";
     }
     
     // Thank you
-    if (input.includes('thank') || input.includes('thanks')) {
-      return "You're welcome! 😊 I'm happy to help. If you have any other questions, feel free to ask!";
+    if (input.match(/\b(thank|thanks|thx|appreciate)\b/)) {
+      const responses = [
+        "You're very welcome! 😊 Happy to help anytime!",
+        "My pleasure! Let me know if you need anything else!",
+        "Glad I could help! Feel free to ask if you have more questions!"
+      ];
+      return responses[Math.floor(Math.random() * responses.length)];
     }
     
-    // Default response for non-garage questions
-    return "I'm a garage management assistant, so I'm specialized in helping with:\n• Vehicle appointments & scheduling\n• Car services & repairs\n• Managing your vehicles\n• Appointment status tracking\n\nFor questions about \"" + userInput + "\", I may not be able to help. Please ask me about garage services, vehicles, or appointments instead! 😊";
+    // Goodbye
+    if (input.match(/\b(bye|goodbye|see you|later|exit|quit)\b/)) {
+      return "Goodbye! 👋 Feel free to come back anytime you need help with your vehicle services. Drive safe!";
+    }
+    
+    // Check if question is garage-related
+    const garageKeywords = ['garage', 'appointment', 'vehicle', 'car', 'service', 'repair', 'maintenance', 
+                           'booking', 'schedule', 'mechanic', 'oil', 'tire', 'brake', 'engine', 'inspection',
+                           'dashboard', 'admin', 'invoice', 'history'];
+    const isGarageRelated = garageKeywords.some(keyword => input.includes(keyword));
+    
+    if (isGarageRelated) {
+      return "I'd be happy to help with that! Could you provide a bit more detail? I can assist with:\n\n📅 Booking & managing appointments\n🚗 Vehicle management\n🔧 Service information & pricing\n📊 Checking appointment status\n💬 General garage questions\n\nWhat specifically would you like to know?";
+    }
+    
+    // For non-garage questions, be polite but redirect
+    return "I'm specialized in helping with garage and vehicle services. While I can't answer that particular question, I'm excellent at helping with:\n\n📅 **Appointments** - Scheduling and management\n🚗 **Vehicles** - Adding and tracking your vehicles\n🔧 **Services** - Information about repairs and maintenance\n📊 **Status** - Tracking your service progress\n\nHow can I help with your vehicle needs today?";
   };
 
   const handleSend = async () => {
@@ -120,7 +193,31 @@ const ChatBot = () => {
           messages: [
             {
               role: 'system',
-              content: 'You are a helpful assistant for a Garage Management System. You help clients with vehicle services, appointments, and general garage questions. Keep responses concise and friendly.'
+              content: `You are an intelligent and helpful assistant for a Garage Management System. Your role is to help customers with:
+
+1. APPOINTMENTS: Booking, checking status, modifying, or canceling appointments
+2. VEHICLES: Adding, viewing, editing, or removing vehicles from their account
+3. SERVICES: Information about repairs, maintenance, pricing, and service types
+4. STATUS TRACKING: Checking appointment progress and service completion
+5. GENERAL HELP: Answering questions about the garage system
+
+GUIDELINES:
+- Be friendly, professional, and concise
+- Provide step-by-step instructions when needed
+- Use emojis sparingly to make responses engaging
+- If asked about non-garage topics, politely redirect to garage-related assistance
+- Always prioritize customer satisfaction and clarity
+- For technical issues, suggest contacting the admin
+- Be proactive in offering related help
+
+RESPONSE STYLE:
+- Keep responses under 200 words when possible
+- Use bullet points for lists
+- Bold important terms using **text**
+- Include relevant emojis: 📅 🚗 🔧 📊 💰 ⏱️
+- End with a follow-up question when appropriate
+
+Remember: You're here to make the garage management experience smooth and easy!`
             },
             ...messages.filter(m => m.role !== 'system'),
             userMessage
