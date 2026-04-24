@@ -123,10 +123,10 @@ const MechanicDashboard = () => {
                   Customer
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                  Status
+                  Phone
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                  Phone
+                  Status
                 </th>
               </tr>
             </thead>
@@ -147,6 +147,12 @@ const MechanicDashboard = () => {
                     <p className="text-xs text-gray-500">{job.user?.email}</p>
                   </td>
                   <td className="px-6 py-4">
+                    <div className="flex items-center gap-2 text-sm text-gray-900">
+                      <Phone className="w-4 h-4 text-gray-400" />
+                      {job.user?.phone || 'N/A'}
+                    </div>
+                  </td>
+                  <td className="px-6 py-4">
                     <span
                       className={`px-2 py-1 text-xs font-medium rounded-full ${getStatusBadge(
                         job.status
@@ -154,12 +160,6 @@ const MechanicDashboard = () => {
                     >
                       {job.status.replace('_', ' ')}
                     </span>
-                  </td>
-                  <td className="px-6 py-4">
-                    <div className="flex items-center gap-2 text-sm text-gray-900">
-                      <Phone className="w-4 h-4 text-gray-400" />
-                      {job.user?.phone || 'N/A'}
-                    </div>
                   </td>
                 </tr>
               ))}
