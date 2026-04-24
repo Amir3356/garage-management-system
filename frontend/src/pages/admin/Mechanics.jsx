@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import api from '../../api/axios';
-import Loader from '../../components/Loader';
 import { UserCog, Mail, Phone, Wrench, Users } from 'lucide-react';
 
 const Mechanics = () => {
@@ -22,7 +21,7 @@ const Mechanics = () => {
     fetchMechanics();
   }, []);
 
-  if (loading) return <Loader />;
+  if (loading) return <div className="p-6 text-center text-gray-500">Loading...</div>;
 
   return (
     <div className="space-y-6 animate-fade-in">
