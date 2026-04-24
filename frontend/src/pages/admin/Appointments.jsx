@@ -9,6 +9,7 @@ const Appointments = () => {
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState('all');
   const [assigningAppointment, setAssigningAppointment] = useState(null);
+  const [selectedMechanicId, setSelectedMechanicId] = useState(null);
 
   useEffect(() => {
     fetchData();
@@ -29,10 +30,15 @@ const Appointments = () => {
     }
   };
 
-  const handleAssign = async (appointmentId, mechanicId) => {
+  const handleAssign = async () => {
+    if (!selectedMechanicId) {
+      alert('Please select a mechanic');
+      return;
+    }
     try {
-      await api.post(`/appointments/${appointmentId}/assign`, { mechanic_id: mechanicId });
+      await api.post(`/appointments/${assigningAppointment.id}/assign`, { mechanic_id: selectedMechanicId });
       setAssigningAppointment(null);
+      setSelectedMechanicId(null);
       fetchData();
     } catch (error) {
       alert(error.response?.data?.message || 'Error assigning mechanic');
@@ -171,7 +177,10 @@ const Appointments = () => {
                         <div>
                           <span className="text-sm text-gray-900">{appointment.mechanic.name}</span>
                           <button
-                            onClick={() => setAssigningAppointment(appointment)}
+                            onClick={() => {
+                        setAssigningAppointment(appointment);
+                        setSelectedMechanicId(null);
+                      }}
                             className="block text-xs text-blue-600 hover:text-blue-700 mt-1"
                           >
                             Change Mechanic
@@ -180,7 +189,10 @@ const Appointments = () => {
                       </div>
                     ) : (
                       <button
-                        onClick={() => setAssigningAppointment(appointment)}
+                        onClick={() => {
+                        setAssigningAppointment(appointment);
+                        setSelectedMechanicId(null);
+                      }}
                         className="text-sm text-blue-600 hover:text-blue-700 font-medium"
                       >
                         Assign Mechanic
@@ -236,17 +248,23 @@ const Appointments = () => {
                 Currently assigned: <strong>{assigningAppointment.mechanic.name}</strong>
               </p>
             )}
-            <div className="space-y-2 max-h-64 overflow-y-auto">
+            <div className="space-y-2 max-h-64 overflow-y-auto mb-4">
               {mechanics
                 .filter((m) => m.id !== assigningAppointment.mechanic?.id)
                 .map((mechanic) => (
                   <button
                     key={mechanic.id}
-                    onClick={() => handleAssign(assigningAppointment.id, mechanic.id)}
-                    className="w-full flex items-center gap-3 p-3 rounded-lg border border-gray-200 hover:border-blue-500 hover:bg-blue-50 transition-colors text-left"
+                    onClick={() => setSelectedMechanicId(mechanic.id)}
+                    className={`w-full flex items-center gap-3 p-3 rounded-lg border transition-colors text-left ${
+                      selectedMechanicId === mechanic.id
+                        ? 'border-blue-500 bg-blue-50 ring-2 ring-blue-500'
+                        : 'border-gray-200 hover:border-blue-500 hover:bg-blue-50'
+                    }`}
                   >
-                    <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center">
-                      <Wrench className="w-4 h-4 text-blue-600" />
+                    <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
+                      selectedMechanicId === mechanic.id ? 'bg-blue-600' : 'bg-blue-100'
+                    }`}>
+                      <Wrench className={`w-4 h-4 ${selectedMechanicId === mechanic.id ? 'text-white' : 'text-blue-600'}`} />
                     </div>
                     <div>
                       <p className="font-medium text-gray-900">{mechanic.name}</p>
@@ -255,12 +273,24 @@ const Appointments = () => {
                   </button>
                 ))}
             </div>
-            <button
-              onClick={() => setAssigningAppointment(null)}
-              className="w-full mt-4 px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50"
-            >
-              Cancel
-            </button>
+            <div className="flex gap-3">
+              <button
+                onClick={() => {
+                  setAssigningAppointment(null);
+                  setSelectedMechanicId(null);
+                }}
+                className="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleAssign}
+                disabled={!selectedMechanicId}
+                className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                Submit
+              </button>
+            </div>
           </div>
         </div>
       )}
