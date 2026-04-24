@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import api from '../../api/axios';
-import Loader from '../../components/Loader';
 import { Calendar, Clock, Wrench, CheckCircle, Sparkles, Shield, Zap, Settings, Eye, X, Info } from 'lucide-react';
 
 const BookService = () => {
@@ -67,7 +66,7 @@ const BookService = () => {
     });
   };
 
-  if (loading) return <Loader />;
+  if (loading) return <div className="p-6 text-center text-gray-500">Loading...</div>;
 
   if (vehicles.length === 0) {
     return (
