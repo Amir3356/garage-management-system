@@ -25,13 +25,34 @@ const Appointments = () => {
       // Handle paginated response
       const appointmentsData = appointmentsRes.data.data || appointmentsRes.data;
       const mechanicsData = mechanicsRes.data.data || mechanicsRes.data;
-      setAppointments(Array.isArray(appointmentsData) ? appointmentsData : []);
+      const appointmentsArray = Array.isArray(appointmentsData) ? appointmentsData : [];
+      // Group appointments by user+vehicle+date
+      const grouped = groupAppointments(appointmentsArray);
+      setAppointments(grouped);
       setMechanics(Array.isArray(mechanicsData) ? mechanicsData : []);
     } catch (error) {
       console.error('Error fetching data:', error);
     } finally {
       setLoading(false);
     }
+  };
+
+  const groupAppointments = (appointments) => {
+    const groups = {};
+    appointments.forEach((apt) => {
+      const key = `${apt.user_id}-${apt.vehicle_id}-${apt.scheduled_date}`;
+      if (!groups[key]) {
+        groups[key] = {
+          ...apt,
+          services: [apt.service],
+          serviceIds: [apt.id],
+        };
+      } else {
+        groups[key].services.push(apt.service);
+        groups[key].serviceIds.push(apt.id);
+      }
+    });
+    return Object.values(groups);
   };
 
   const handleAssign = async () => {
