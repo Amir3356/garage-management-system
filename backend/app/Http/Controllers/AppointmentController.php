@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Appointment;
+use App\Mail\AppointmentScheduled;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 
 class AppointmentController extends Controller
 {
@@ -63,7 +65,12 @@ class AppointmentController extends Controller
             'scheduled_date' => $request->scheduled_date,
         ]);
 
-        return response()->json($appointment->load(['vehicle', 'service']), 201);
+        $appointment->load(['user', 'vehicle', 'service']);
+
+        // Send email notification to admin
+        Mail::to('amirsiraj1995@gmail.com')->send(new AppointmentScheduled($appointment));
+
+        return response()->json($appointment, 201);
     }
 
     public function update(Request $request, Appointment $appointment)
