@@ -178,8 +178,6 @@ const ChatBot = () => {
     }
 
     try {
-      console.log('Using API Key:', API_KEY?.substring(0, 20) + '...');
-
       const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
         method: 'POST',
         headers: {
@@ -226,10 +224,11 @@ Remember: You're here to make the garage management experience smooth and easy!`
       });
 
       const data = await response.json();
-      console.log('API Response:', data);
 
       if (!response.ok) {
-        throw new Error(data.error?.message || `HTTP error! status: ${response.status}`);
+        // Silently fall back to local responses on API errors (rate limits, etc.)
+        console.log('API unavailable, using local responses');
+        throw new Error('API_FALLBACK');
       }
 
       if (data.choices && data.choices[0] && data.choices[0].message) {
@@ -238,12 +237,15 @@ Remember: You're here to make the garage management experience smooth and easy!`
           content: data.choices[0].message.content
         }]);
       } else {
-        throw new Error('Invalid response from API');
+        throw new Error('API_FALLBACK');
       }
     } catch (error) {
-      console.error('Chat error:', error);
+      // Silently use intelligent fallback responses
+      // No error shown to user - seamless experience
+      if (error.message !== 'API_FALLBACK') {
+        console.log('Using local intelligent responses');
+      }
       
-      // Use fallback response instead of showing error
       setMessages(prev => [...prev, {
         role: 'assistant',
         content: generateFallbackResponse(userMessage.content)
