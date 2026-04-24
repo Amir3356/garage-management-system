@@ -267,18 +267,6 @@ const BookService = () => {
             />
           </div>
 
-          {/* Validation Summary */}
-          {(!formData.vehicle_id || !formData.service_id || !formData.scheduled_date) && (
-            <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 text-sm text-amber-800">
-              <p className="font-medium mb-1">Please complete all required fields:</p>
-              <ul className="list-disc list-inside">
-                {!formData.vehicle_id && <li>Select a vehicle</li>}
-                {!formData.service_id && <li>Select a service</li>}
-                {!formData.scheduled_date && <li>Select date and time</li>}
-              </ul>
-            </div>
-          )}
-
           <button
             type="submit"
             disabled={submitting || !formData.vehicle_id || !formData.service_id || !formData.scheduled_date}
