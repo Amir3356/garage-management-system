@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import api from '../../api/axios';
 import Loader from '../../components/Loader';
-import ChatBot from '../../components/ChatBot';
 import { Car, Calendar, CheckCircle, Clock } from 'lucide-react';
 
 const ClientDashboard = () => {
@@ -156,7 +155,6 @@ const ClientDashboard = () => {
           </table>
         </div>
       </div>
-      <ChatBot />
     </div>
   );
 };

@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import api from '../../api/axios';
 import Loader from '../../components/Loader';
-import ChatBot from '../../components/ChatBot';
 import { Calendar, Clock, Wrench, CheckCircle, Sparkles, Shield, Zap, Settings, Eye, X, Info } from 'lucide-react';
 
 const BookService = () => {
@@ -411,7 +410,6 @@ const BookService = () => {
           </div>
         </div>
       )}
-      <ChatBot />
     </div>
   );
 };

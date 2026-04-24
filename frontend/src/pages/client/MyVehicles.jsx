@@ -1,9 +1,7 @@
 import { useEffect, useState } from 'react';
 import api from '../../api/axios';
 import Loader from '../../components/Loader';
-import ChatBot from '../../components/ChatBot';
 import { Plus, Car, Trash2, Edit2 } from 'lucide-react';
-
 const MyVehicles = () => {
   const [vehicles, setVehicles] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -221,7 +219,6 @@ const MyVehicles = () => {
           </div>
         </div>
       )}
-      <ChatBot />
     </div>
   );
 };
