@@ -270,7 +270,8 @@ const Appointments = () => {
             </div>
           </div>
         ))}
-      </div>
+        </div>
+      )}
 
       {/* Assign/Change Mechanic Modal */}
       {assigningAppointment && (
