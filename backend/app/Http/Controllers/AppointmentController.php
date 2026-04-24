@@ -13,10 +13,12 @@ class AppointmentController extends Controller
     public function index(Request $request)
     {
         $user = $request->user();
+        $perPage = $request->get('per_page', 10);
 
         if ($user->isAdmin()) {
             return response()->json(
-                Appointment::with(['user', 'vehicle', 'service', 'mechanic'])->get()
+                Appointment::with(['user', 'vehicle', 'service', 'mechanic'])
+                    ->paginate($perPage)
             );
         }
 
@@ -24,14 +26,14 @@ class AppointmentController extends Controller
             return response()->json(
                 Appointment::with(['user', 'vehicle', 'service', 'mechanic'])
                     ->where('assigned_mechanic_id', $user->id)
-                    ->get()
+                    ->paginate($perPage)
             );
         }
 
         return response()->json(
             Appointment::with(['vehicle', 'service', 'mechanic'])
                 ->where('user_id', $user->id)
-                ->get()
+                ->paginate($perPage)
         );
     }
 
