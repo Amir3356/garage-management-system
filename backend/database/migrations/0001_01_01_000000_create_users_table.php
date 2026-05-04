@@ -12,7 +12,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('username')->unique()->nullable();
-            $table->string('email')->unique();
+            $table->string('email')->unique()->nullable();
             $table->string('phone')->nullable();
             $table->string('password');
             $table->enum('role', ['admin', 'client', 'mechanic'])->default('client');
